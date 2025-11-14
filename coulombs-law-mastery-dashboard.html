@@ -1,0 +1,977 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mastery Dashboard: Coulomb's Law</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body { 
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+      padding: 20px; 
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+    }
+    
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    
+    h1 {
+      text-align: center;
+      color: white;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+      margin-bottom: 10px;
+      font-size: 2.5em;
+    }
+    
+    .subtitle {
+      text-align: center;
+      color: rgba(255,255,255,0.9);
+      margin-bottom: 30px;
+      font-size: 1.1em;
+    }
+    
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 15px;
+      margin-bottom: 30px;
+    }
+    
+    .stat-item {
+      background: white;
+      padding: 20px;
+      border-radius: 12px;
+      text-align: center;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+      transition: transform 0.2s ease;
+    }
+    
+    .stat-item:hover {
+      transform: translateY(-5px);
+    }
+    
+    .stat-number {
+      font-size: 2.5em;
+      font-weight: bold;
+      color: #667eea;
+      margin-bottom: 5px;
+    }
+    
+    .stat-label {
+      color: #666;
+      font-size: 0.95em;
+      font-weight: 500;
+    }
+    
+    .section { 
+      margin-bottom: 30px; 
+      padding: 30px; 
+      background: white; 
+      border-radius: 15px; 
+      box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+    }
+    
+    h2 { 
+      margin-bottom: 20px; 
+      color: #333;
+      border-bottom: 3px solid #667eea;
+      padding-bottom: 10px;
+      font-size: 1.8em;
+    }
+    
+    .progress {
+      width: 100%;
+      height: 25px;
+      background: #e0e0e0;
+      border-radius: 12px;
+      overflow: hidden;
+      margin-bottom: 20px;
+    }
+    
+    .progress-bar {
+      height: 100%;
+      background: linear-gradient(90deg, #667eea, #764ba2);
+      width: 0%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: bold;
+      font-size: 0.85em;
+      transition: width 0.3s ease;
+    }
+    
+    .question {
+      margin-bottom: 25px;
+      padding: 20px;
+      border-left: 4px solid #667eea;
+      background: #f8f9ff;
+      border-radius: 0 10px 10px 0;
+    }
+    
+    .question p {
+      margin-bottom: 15px;
+      line-height: 1.6;
+      color: #333;
+    }
+    
+    .question-text {
+      font-weight: 600;
+      margin-bottom: 15px;
+      font-size: 1.05em;
+    }
+    
+    .options {
+      display: grid;
+      gap: 10px;
+      margin-bottom: 15px;
+    }
+    
+    .option {
+      padding: 12px 15px;
+      border: 2px solid #ddd;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      background: white;
+    }
+    
+    .option:hover {
+      border-color: #667eea;
+      background: #f0f4ff;
+    }
+    
+    .option input[type="radio"] {
+      margin-right: 10px;
+      cursor: pointer;
+    }
+    
+    .option label {
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+    }
+    
+    .button-group {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 15px;
+    }
+    
+    button {
+      padding: 12px 24px;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 1em;
+      transition: all 0.2s ease;
+    }
+    
+    button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+    }
+    
+    button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+    }
+    
+    .feedback {
+      margin-top: 15px;
+      padding: 15px;
+      border-radius: 8px;
+      animation: slideIn 0.3s ease-in;
+      font-weight: 500;
+      line-height: 1.6;
+    }
+    
+    @keyframes slideIn {
+      from { 
+        opacity: 0; 
+        transform: translateY(-10px); 
+      }
+      to { 
+        opacity: 1; 
+        transform: translateY(0); 
+      }
+    }
+    
+    .correct {
+      color: #27ae60;
+      background: #d5f4e6;
+      border-left: 4px solid #27ae60;
+    }
+    
+    .incorrect {
+      color: #e74c3c;
+      background: #ffeaea;
+      border-left: 4px solid #e74c3c;
+    }
+    
+    .hint-text {
+      margin-top: 10px;
+      padding: 10px;
+      background: #fff3cd;
+      border-left: 4px solid #ffc107;
+      border-radius: 4px;
+      font-size: 0.95em;
+      color: #856404;
+    }
+    
+    .formula-box {
+      background: linear-gradient(135deg, #667eea15, #764ba215);
+      padding: 20px;
+      border-left: 4px solid #667eea;
+      border-radius: 8px;
+      margin-bottom: 20px;
+    }
+    
+    .formula-box h4 {
+      margin-bottom: 12px;
+      color: #667eea;
+      font-size: 1.1em;
+    }
+    
+    .formula-box div {
+      margin: 8px 0;
+      color: #333;
+      font-family: 'Courier New', monospace;
+      padding: 8px;
+      background: white;
+      border-radius: 4px;
+    }
+    
+    .mastery-screen {
+      text-align: center;
+      padding: 40px;
+      background: linear-gradient(135deg, #d4fc79 0%, #96f97b 100%);
+      border-radius: 15px;
+      margin-bottom: 30px;
+    }
+    
+    .mastery-screen h2 {
+      font-size: 2.5em;
+      color: #2d5016;
+      border: none;
+      margin-bottom: 20px;
+    }
+    
+    .mastery-screen p {
+      font-size: 1.3em;
+      color: #3d7028;
+      font-weight: 600;
+    }
+    
+    .matching-container {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      margin-top: 20px;
+    }
+    
+    .matching-column {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    
+    .match-item {
+      padding: 15px;
+      background: white;
+      border: 2px solid #ddd;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      text-align: center;
+      font-weight: 500;
+    }
+    
+    .match-item:hover:not(.correct):not(.incorrect) {
+      border-color: #667eea;
+      background: #f0f4ff;
+    }
+    
+    .match-item.selected {
+      background: #667eea;
+      color: white;
+      border-color: #667eea;
+    }
+    
+    .match-item.correct {
+      background: #d5f4e6;
+      border-color: #27ae60;
+      color: #27ae60;
+      cursor: default;
+    }
+    
+    .match-item.incorrect {
+      background: #ffeaea;
+      border-color: #e74c3c;
+      animation: shake 0.3s ease;
+    }
+    
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-5px); }
+      75% { transform: translateX(5px); }
+    }
+    
+    .match-instruction {
+      text-align: center;
+      margin-bottom: 15px;
+      color: #667eea;
+      font-weight: 600;
+    }
+    
+    .instructions {
+      background: #e8f4f8;
+      padding: 15px;
+      border-left: 4px solid #3498db;
+      border-radius: 4px;
+      margin-bottom: 20px;
+      color: #2c3e50;
+    }
+    
+    .instructions strong {
+      color: #2c3e50;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>⚡ Coulomb's Law</h1>
+    <p class="subtitle">Physics Mastery Dashboard</p>
+    
+    <div class="stats">
+      <div class="stat-item">
+        <div class="stat-number" id="conceptual-stat">0%</div>
+        <div class="stat-label">Conceptual</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-number" id="skills-stat">0%</div>
+        <div class="stat-label">Skills</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-number" id="advanced-stat">0%</div>
+        <div class="stat-label">Advanced</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-number" id="matching-stat">0%</div>
+        <div class="stat-label">Matching</div>
+      </div>
+    </div>
+    
+    <div id="mastery" style="display: none;"></div>
+
+    <div id="conceptual" class="section">
+      <h2>🧠 Conceptual Questions</h2>
+      <div class="progress">
+        <div class="progress-bar" id="conceptual-progress" style="width: 0%">0%</div>
+      </div>
+    </div>
+
+    <div id="skills" class="section">
+      <h2>🧮 Skills Practice</h2>
+      <div class="progress">
+        <div class="progress-bar" id="skills-progress" style="width: 0%">0%</div>
+      </div>
+      <div class="formula-box">
+        <h4>📝 Key Constants & Formulas:</h4>
+        <div><strong>Coulomb's Law:</strong> Fe = ke(q₁q₂/r²)</div>
+        <div><strong>Coulomb's Constant:</strong> ke = 8.99 × 10⁹ N·m²/C²</div>
+        <div><strong>Charge Units:</strong> 1 μC = 1 × 10⁻⁶ C</div>
+        <div><strong>Distance Units:</strong> 1 cm = 0.01 m</div>
+      </div>
+    </div>
+
+    <div id="advanced" class="section">
+      <h2>🚀 Advanced Problems</h2>
+      <div class="progress">
+        <div class="progress-bar" id="advanced-progress" style="width: 0%">0%</div>
+      </div>
+    </div>
+
+    <div id="matching" class="section">
+      <h2>📈 Graph Interpretation</h2>
+      <div class="progress">
+        <div class="progress-bar" id="matching-progress" style="width: 0%">0%</div>
+      </div>
+    </div>
+
+    <div class="instructions" style="margin-top: 30px;">
+      <strong>📌 To submit your mastery:</strong> Once you've completed all sections and achieved mastery (70%+) in each, take a screenshot of this dashboard and upload it to Schoology under the "Coulomb's Law Mastery" assignment.
+    </div>
+  </div>
+
+  <script>
+    const conceptualQuestions = [
+      {
+        text: "What does it mean if a force is positive or negative in a Coulomb's Law diagram? Does the mathematical sign of a force relate to its strength?",
+        options: [
+          "Positive and negative signs indicate the strength of the force",
+          "A positive force is repulsive and a negative force is attractive. The mathematical sign indicates force direction, not strength.",
+          "The sign only matters for gravitational forces, not electric forces",
+          "Positive forces are stronger than negative forces"
+        ],
+        correct: 1,
+        feedback: [
+          "The sign indicates direction, not strength.",
+          "Correct! In Coulomb's Law diagrams, positive forces are repulsive and negative forces are attractive. The sign represents direction, while the magnitude of the force represents strength.",
+          "Electric forces have positive and negative signs that indicate direction.",
+          "The sign represents direction, not a comparison of strength."
+        ]
+      },
+      {
+        text: "Two identical positive charges are brought closer together. How does the electrostatic force between them change?",
+        options: [
+          "The force decreases",
+          "The force increases",
+          "The force remains the same",
+          "The force becomes zero"
+        ],
+        correct: 1,
+        feedback: [
+          "As distance decreases, force increases due to the inverse-square relationship.",
+          "Correct! As distance decreases, the electrostatic force increases according to Coulomb's Law (F ∝ 1/r²).",
+          "Coulomb's Law shows that force depends on distance between charges.",
+          "The force only becomes zero when charges are infinitely far apart."
+        ]
+      },
+      {
+        text: "According to Coulomb's Law, what is the relationship between the distance between two charges and the electrostatic force between them?",
+        options: [
+          "Force is directly proportional to distance",
+          "Force is inversely proportional to distance",
+          "Force is inversely proportional to the square of distance",
+          "Force is independent of distance"
+        ],
+        correct: 2,
+        feedback: [
+          "Coulomb's Law includes an inverse-square relationship (1/r²), not a linear one.",
+          "Force is actually inversely proportional to the square of distance (1/r²).",
+          "Correct! Coulomb's Law states that F ∝ 1/r², making it an inverse-square relationship.",
+          "Distance is critical to Coulomb's Law—it's the key variable that determines force magnitude."
+        ]
+      },
+      {
+        text: "Two charges separated by 2 meters experience a force of 100 N. If the distance between them is reduced to 1 meter, what happens to the force?",
+        options: [
+          "The force decreases to 50 N",
+          "The force increases to 200 N",
+          "The force increases to 400 N",
+          "The force remains 100 N"
+        ],
+        correct: 2,
+        feedback: [
+          "When distance is halved, force increases by a factor of 4 (inverse square).",
+          "The force increases more than this because of the inverse-square relationship.",
+          "Correct! When distance is halved (divided by 2), force is multiplied by 2² = 4. So 100 N × 4 = 400 N.",
+          "Coulomb's Law shows that force depends significantly on distance."
+        ]
+      }
+    ];
+
+    const skillsQuestions = [
+      {
+        text: "Two point charges, q₁ = 3.0 μC and q₂ = 4.0 μC, are separated by 0.05 m. Calculate the electrostatic force between them using Coulomb's Law. (k = 8.99 × 10⁹ N·m²/C²)",
+        answer: 21.6,
+        tolerance: 1.0,
+        hint: "Convert μC to C: 1 μC = 1 × 10⁻⁶ C. Then use F = k|q₁q₂|/r² = (8.99 × 10⁹)(3.0 × 10⁻⁶)(4.0 × 10⁻⁶)/(0.05)²",
+        feedback: "Excellent! You calculated F = 21.6 N. Remember: Coulomb's constant is 8.99 × 10⁹ N·m²/C², and always convert units carefully."
+      },
+      {
+        text: "Three point charges are arranged in a straight line. q₁ = 7 μC, q₂ = −7 μC, and q₃ = 7 μC. Charge q₁ is 12 cm from q₂, and q₃ is 12 cm from q₂. Determine the magnitude of the net electric force on charge q₁ (in Newtons).",
+        answer: 22.9,
+        tolerance: 1.0,
+        hint: "The force from q₂ (attractive, pointing right) is stronger than the force from q₃ (repulsive, pointing left) because q₂ is closer. Use F = k|q₁q₂|/r² for each force and combine them vectorially.",
+        feedback: "Excellent! You found the net force is 22.9 N. The attractive force from the middle negative charge outweighs the repulsive force from the distant positive charge."
+      },
+      {
+        text: "Two charges experience an electrostatic force of 90 N when they are 0.1 m apart. If they are moved to 0.3 m apart (keeping charges constant), what is the new electrostatic force?",
+        answer: 10,
+        tolerance: 0.5,
+        hint: "Use the inverse-square relationship: F₁/F₂ = (r₂/r₁)². So F₂ = F₁ × (r₁/r₂)² = 90 × (0.1/0.3)²",
+        feedback: "Great work! Using the inverse-square law, the new force is 10 N. When distance triples, force decreases by a factor of 9."
+      }
+    ];
+
+    const advancedQuestions = [
+      {
+        text: "Two electrons are separated by 1.0 × 10⁻¹⁰ m (about the size of an atom). The charge of an electron is 1.6 × 10⁻¹⁹ C. Calculate the electrostatic force between them. (k = 8.99 × 10⁹ N·m²/C²)",
+        answer: 230,
+        tolerance: 10,
+        hint: "Since electrons have the same charge, the force is repulsive. F = k × q² / r² where q = 1.6 × 10⁻¹⁹ C.",
+        feedback: "Excellent! The force is approximately 230 N, which shows how strong electrostatic forces are at the atomic scale!"
+      },
+      {
+        text: "Two identical charges separated by distance r experience a repulsive force F. If one charge is doubled and the distance is also doubled, what is the new force in terms of F?",
+        options: [
+          "F/2",
+          "F",
+          "2F",
+          "4F"
+        ],
+        correct: 0,
+        feedback: [
+          "Correct! New force = (2q)q/(2r)² = 2q²/4r² = (1/2)(q²/r²) = F/2",
+          "Not quite. Consider how both charge and distance changes affect the force.",
+          "Think about the inverse-square relationship with distance.",
+          "The distance squared makes a bigger impact than you might think."
+        ]
+      },
+      {
+        text: "In a three-charge system, when can the net force on a charge be zero?",
+        options: [
+          "Only when all three charges are identical",
+          "Never—three charges always produce a net force",
+          "When attractive and repulsive forces balance (different arrangements possible)",
+          "Only when the middle charge is negative"
+        ],
+        correct: 2,
+        feedback: [
+          "Charges don't need to be identical; their arrangement and magnitudes matter.",
+          "Actually, it's possible! Attractive and repulsive forces can balance.",
+          "Correct! With proper arrangement and charge magnitudes, attractive and repulsive forces can produce zero net force.",
+          "The sign of the middle charge matters, but other configurations work too."
+        ]
+      }
+    ];
+
+    const matchingQuestions = [
+      {
+        pairs: [
+          { id: "law", term: "Coulomb's Law", definition: "F = k(q₁q₂/r²)" },
+          { id: "constant", term: "Coulomb's Constant (k)", definition: "8.99 × 10⁹ N·m²/C²" },
+          { id: "charge", term: "Electric Charge (q)", definition: "Measured in Coulombs (C)" },
+          { id: "distance", term: "Distance (r)", definition: "Measured in meters (m)" }
+        ]
+      }
+    ];
+
+    let conceptualScore = 0;
+    let skillsScore = 0;
+    let advancedScore = 0;
+    let matchingScore = 0;
+    let skillsAttempts = {};
+    let matchingCompleted = [];
+    let selectedLeft = null;
+    let selectedRight = null;
+
+    function buildConceptual() {
+      const container = document.getElementById('conceptual');
+      const questionsDiv = document.createElement('div');
+      
+      conceptualQuestions.forEach((q, index) => {
+        const qDiv = document.createElement('div');
+        qDiv.className = 'question';
+        
+        const qText = document.createElement('p');
+        qText.className = 'question-text';
+        qText.textContent = `Question ${index + 1}: ${q.text}`;
+        qDiv.appendChild(qText);
+        
+        const optionsDiv = document.createElement('div');
+        optionsDiv.className = 'options';
+        
+        q.options.forEach((option, optIndex) => {
+          const optDiv = document.createElement('div');
+          optDiv.className = 'option';
+          optDiv.innerHTML = `
+            <label>
+              <input type="radio" name="conceptual-${index}" value="${optIndex}">
+              ${option}
+            </label>
+          `;
+          optDiv.addEventListener('change', () => checkConceptual(index, optIndex, q.correct, q.feedback));
+          optionsDiv.appendChild(optDiv);
+        });
+        
+        qDiv.appendChild(optionsDiv);
+        questionsDiv.appendChild(qDiv);
+      });
+      
+      container.appendChild(questionsDiv);
+    }
+
+    function checkConceptual(qIndex, selected, correct, feedbacks) {
+      const feedbackDiv = document.querySelector(`#conceptual .question:nth-child(${qIndex + 1}) .feedback`) || 
+                         document.createElement('div');
+      feedbackDiv.className = 'feedback';
+      
+      if (selected === correct) {
+        feedbackDiv.classList.remove('incorrect');
+        feedbackDiv.classList.add('correct');
+        feedbackDiv.textContent = feedbacks[correct];
+        if (conceptualScore < conceptualQuestions.length) {
+          conceptualScore++;
+        }
+      } else {
+        feedbackDiv.classList.remove('correct');
+        feedbackDiv.classList.add('incorrect');
+        feedbackDiv.textContent = feedbacks[selected];
+      }
+      
+      document.querySelector(`#conceptual .question:nth-child(${qIndex + 1})`).appendChild(feedbackDiv);
+      updateProgress();
+    }
+
+    function buildSkills() {
+      const container = document.getElementById('skills');
+      const questionsDiv = document.createElement('div');
+      
+      skillsQuestions.forEach((q, index) => {
+        const qDiv = document.createElement('div');
+        qDiv.className = 'question';
+        
+        const qText = document.createElement('p');
+        qText.className = 'question-text';
+        qText.textContent = `Problem ${index + 1}: ${q.text}`;
+        qDiv.appendChild(qText);
+        
+        const inputDiv = document.createElement('div');
+        inputDiv.style.marginBottom = '10px';
+        
+        const input = document.createElement('input');
+        input.type = 'number';
+        input.placeholder = 'Enter your answer';
+        input.style.width = '150px';
+        input.style.padding = '10px';
+        input.style.marginRight = '10px';
+        inputDiv.appendChild(input);
+        
+        const submitBtn = document.createElement('button');
+        submitBtn.textContent = 'Check';
+        submitBtn.onclick = () => checkSkills(index, input.value, q.answer, q.tolerance, q.hint, q.feedback);
+        inputDiv.appendChild(submitBtn);
+        
+        const hintBtn = document.createElement('button');
+        hintBtn.textContent = 'Hint';
+        hintBtn.onclick = () => showHint(qDiv, q.hint);
+        inputDiv.appendChild(hintBtn);
+        
+        qDiv.appendChild(inputDiv);
+        questionsDiv.appendChild(qDiv);
+      });
+      
+      container.appendChild(questionsDiv);
+    }
+
+    function checkSkills(qIndex, userAnswer, correctAnswer, tolerance, hint, feedback) {
+      const qDiv = document.querySelectorAll('#skills .question')[qIndex];
+      const feedbackDiv = qDiv.querySelector('.feedback') || document.createElement('div');
+      feedbackDiv.className = 'feedback';
+      
+      const answer = parseFloat(userAnswer);
+      const isCorrect = Math.abs(answer - correctAnswer) <= tolerance;
+      
+      if (isCorrect) {
+        feedbackDiv.classList.remove('incorrect');
+        feedbackDiv.classList.add('correct');
+        feedbackDiv.textContent = feedback;
+        if (!skillsAttempts[qIndex]) {
+          skillsScore++;
+          skillsAttempts[qIndex] = true;
+        }
+      } else {
+        feedbackDiv.classList.remove('correct');
+        feedbackDiv.classList.add('incorrect');
+        feedbackDiv.textContent = `Not quite. The correct answer is ${correctAnswer}. ${feedback}`;
+      }
+      
+      qDiv.appendChild(feedbackDiv);
+      updateProgress();
+    }
+
+    function showHint(questionDiv, hint) {
+      let hintDiv = questionDiv.querySelector('.hint-text');
+      if (hintDiv) {
+        hintDiv.remove();
+      } else {
+        hintDiv = document.createElement('div');
+        hintDiv.className = 'hint-text';
+        hintDiv.textContent = '💡 ' + hint;
+        questionDiv.appendChild(hintDiv);
+      }
+    }
+
+    function buildAdvanced() {
+      const container = document.getElementById('advanced');
+      const questionsDiv = document.createElement('div');
+      
+      advancedQuestions.forEach((q, index) => {
+        const qDiv = document.createElement('div');
+        qDiv.className = 'question';
+        
+        const qText = document.createElement('p');
+        qText.className = 'question-text';
+        qText.textContent = `Problem ${index + 1}: ${q.text}`;
+        qDiv.appendChild(qText);
+        
+        if (q.options) {
+          // Multiple choice
+          const optionsDiv = document.createElement('div');
+          optionsDiv.className = 'options';
+          
+          q.options.forEach((option, optIndex) => {
+            const optDiv = document.createElement('div');
+            optDiv.className = 'option';
+            optDiv.innerHTML = `
+              <label>
+                <input type="radio" name="advanced-${index}" value="${optIndex}">
+                ${option}
+              </label>
+            `;
+            optDiv.addEventListener('change', () => checkAdvanced(index, optIndex, q.correct, q.feedback));
+            optionsDiv.appendChild(optDiv);
+          });
+          
+          qDiv.appendChild(optionsDiv);
+        } else {
+          // Calculation
+          const inputDiv = document.createElement('div');
+          inputDiv.style.marginBottom = '10px';
+          
+          const input = document.createElement('input');
+          input.type = 'number';
+          input.placeholder = 'Enter your answer';
+          input.style.width = '150px';
+          input.style.padding = '10px';
+          input.style.marginRight = '10px';
+          inputDiv.appendChild(input);
+          
+          const submitBtn = document.createElement('button');
+          submitBtn.textContent = 'Check';
+          submitBtn.onclick = () => checkAdvanced(index, input.value, q.answer, q.tolerance, q.hint, q.feedback);
+          inputDiv.appendChild(submitBtn);
+          
+          const hintBtn = document.createElement('button');
+          hintBtn.textContent = 'Hint';
+          hintBtn.onclick = () => showHint(qDiv, q.hint);
+          inputDiv.appendChild(hintBtn);
+          
+          qDiv.appendChild(inputDiv);
+        }
+        
+        questionsDiv.appendChild(qDiv);
+      });
+      
+      container.appendChild(questionsDiv);
+    }
+
+    function checkAdvanced(qIndex, selected, correct, feedbacks, tolerance, hint, feedback) {
+      const qDiv = document.querySelectorAll('#advanced .question')[qIndex];
+      const feedbackDiv = qDiv.querySelector('.feedback') || document.createElement('div');
+      feedbackDiv.className = 'feedback';
+      
+      let isCorrect = false;
+      
+      if (typeof selected === 'string' && selected.includes('.')) {
+        // Calculation problem
+        const answer = parseFloat(selected);
+        isCorrect = Math.abs(answer - correct) <= tolerance;
+        if (isCorrect) {
+          feedbackDiv.classList.remove('incorrect');
+          feedbackDiv.classList.add('correct');
+          feedbackDiv.textContent = feedback;
+          if (!advancedScore || advancedScore < advancedQuestions.length) {
+            advancedScore++;
+          }
+        } else {
+          feedbackDiv.classList.remove('correct');
+          feedbackDiv.classList.add('incorrect');
+          feedbackDiv.textContent = `Not quite. The correct answer is ${correct}. ${feedback}`;
+        }
+      } else {
+        // Multiple choice
+        isCorrect = parseInt(selected) === correct;
+        if (isCorrect) {
+          feedbackDiv.classList.remove('incorrect');
+          feedbackDiv.classList.add('correct');
+          feedbackDiv.textContent = feedbacks[correct];
+          if (!advancedScore || advancedScore < advancedQuestions.length) {
+            advancedScore++;
+          }
+        } else {
+          feedbackDiv.classList.remove('correct');
+          feedbackDiv.classList.add('incorrect');
+          feedbackDiv.textContent = feedbacks[selected];
+        }
+      }
+      
+      qDiv.appendChild(feedbackDiv);
+      updateProgress();
+    }
+
+    function buildGraphs() {
+      const container = document.getElementById('matching');
+      const matchingDiv = document.createElement('div');
+      
+      matchingDiv.className = 'question';
+      
+      const instruction = document.createElement('p');
+      instruction.className = 'match-instruction';
+      instruction.textContent = 'Click on a term on the left, then click on its matching definition on the right. Correct matches will turn green!';
+      matchingDiv.appendChild(instruction);
+      
+      const matchContainer = document.createElement('div');
+      matchContainer.className = 'matching-container';
+      
+      const leftCol = document.createElement('div');
+      leftCol.className = 'matching-column';
+      
+      const rightCol = document.createElement('div');
+      rightCol.className = 'matching-column';
+      
+      const pairs = matchingQuestions[0].pairs;
+      const shuffled = [...pairs].sort(() => Math.random() - 0.5);
+      
+      pairs.forEach(pair => {
+        const item = document.createElement('div');
+        item.className = 'match-item';
+        item.dataset.id = pair.id;
+        item.textContent = pair.term;
+        item.onclick = () => selectItem(item, 'left');
+        leftCol.appendChild(item);
+      });
+      
+      shuffled.forEach(pair => {
+        const item = document.createElement('div');
+        item.className = 'match-item';
+        item.dataset.id = pair.id;
+        item.textContent = pair.definition;
+        item.onclick = () => selectItem(item, 'right');
+        rightCol.appendChild(item);
+      });
+      
+      matchContainer.appendChild(leftCol);
+      matchContainer.appendChild(rightCol);
+      matchingDiv.appendChild(matchContainer);
+      container.appendChild(matchingDiv);
+    }
+
+    function selectItem(item, side) {
+      if (!item || item.classList.contains('correct')) return;
+      
+      if (side === 'left') {
+        if (selectedLeft) selectedLeft.classList.remove('selected');
+        selectedLeft = item;
+      } else {
+        if (selectedRight) selectedRight.classList.remove('selected');
+        selectedRight = item;
+      }
+      
+      item.classList.add('selected');
+      
+      if (selectedLeft && selectedRight) {
+        checkMatch();
+      }
+    }
+
+    function checkMatch() {
+      if (!selectedLeft || !selectedRight) return;
+      
+      const leftId = selectedLeft.dataset.id;
+      const rightId = selectedRight.dataset.id;
+      
+      if (leftId === rightId) {
+        selectedLeft.classList.remove('selected');
+        selectedRight.classList.remove('selected');
+        selectedLeft.classList.add('correct');
+        selectedRight.classList.add('correct');
+        matchingCompleted.push(leftId);
+        matchingScore++;
+        
+        setTimeout(() => {
+          if (matchingScore === matchingQuestions[0].pairs.length) {
+            const instruction = document.querySelector('.match-instruction');
+            if (instruction) {
+              instruction.innerHTML = "🎉 Perfect! All matches completed correctly! 🎉";
+              instruction.style.color = '#27ae60';
+              instruction.style.fontWeight = 'bold';
+            }
+          }
+          checkMastery();
+        }, 500);
+      } else {
+        selectedLeft.classList.add('incorrect');
+        selectedRight.classList.add('incorrect');
+        
+        setTimeout(() => {
+          if (selectedLeft) selectedLeft.classList.remove('selected', 'incorrect');
+          if (selectedRight) selectedRight.classList.remove('selected', 'incorrect');
+        }, 1000);
+      }
+      
+      selectedLeft = null;
+      selectedRight = null;
+    }
+
+    function updateProgress() {
+      const conceptualPercent = Math.round((conceptualScore / conceptualQuestions.length) * 100);
+      const skillsPercent = Math.round((skillsScore / skillsQuestions.length) * 100);
+      const advancedPercent = Math.round((advancedScore / advancedQuestions.length) * 100);
+      const matchingPercent = Math.round((matchingScore / matchingQuestions[0].pairs.length) * 100);
+      
+      document.getElementById('conceptual-stat').textContent = conceptualPercent + '%';
+      document.getElementById('skills-stat').textContent = skillsPercent + '%';
+      document.getElementById('advanced-stat').textContent = advancedPercent + '%';
+      document.getElementById('matching-stat').textContent = matchingPercent + '%';
+      
+      document.getElementById('conceptual-progress').style.width = conceptualPercent + '%';
+      document.getElementById('conceptual-progress').textContent = conceptualPercent + '%';
+      
+      document.getElementById('skills-progress').style.width = skillsPercent + '%';
+      document.getElementById('skills-progress').textContent = skillsPercent + '%';
+      
+      document.getElementById('advanced-progress').style.width = advancedPercent + '%';
+      document.getElementById('advanced-progress').textContent = advancedPercent + '%';
+      
+      document.getElementById('matching-progress').style.width = matchingPercent + '%';
+      document.getElementById('matching-progress').textContent = matchingPercent + '%';
+      
+      checkMastery();
+    }
+
+    function checkMastery() {
+      const conceptualPercent = (conceptualScore / conceptualQuestions.length) * 100;
+      const skillsPercent = (skillsScore / skillsQuestions.length) * 100;
+      const advancedPercent = (advancedScore / advancedQuestions.length) * 100;
+      const matchingPercent = (matchingScore / matchingQuestions[0].pairs.length) * 100;
+      
+      if (conceptualPercent >= 70 && skillsPercent >= 70 && advancedPercent >= 70 && matchingPercent >= 70) {
+        const masteryDiv = document.getElementById('mastery');
+        masteryDiv.innerHTML = `
+          <div class="mastery-screen">
+            <h2>🎓 MASTERY ACHIEVED!</h2>
+            <p>Congratulations! You've successfully mastered Coulomb's Law.</p>
+            <p>📊 Final Scores: Conceptual ${Math.round(conceptualPercent)}% | Skills ${Math.round(skillsPercent)}% | Advanced ${Math.round(advancedPercent)}% | Matching ${Math.round(matchingPercent)}%</p>
+          </div>
+        `;
+        masteryDiv.style.display = 'block';
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+      skillsAttempts = {};
+      buildConceptual();
+      buildSkills();
+      buildAdvanced();
+      buildGraphs();
+      updateProgress();
+    });
+  </script>
+</body>
+</html>
